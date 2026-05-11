@@ -28,4 +28,8 @@ jobs:
     - name: Upload All Updates
       run: |
         aws s3 sync /webroot s3://hl7au-fhir-ig
+
+    - name: Perform Invalidations
+      run: |
+        aws cloudfront create-invalidation --distribution-id E2U6NB1JDLY5NT --paths "/fhir/package-feed.xml /fhir/publication-feed.xml /fhir/ps/package-list.json /fhir/ps/history.html
   
