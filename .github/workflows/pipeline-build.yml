@@ -1,4 +1,4 @@
-name: Au base IG Profiles publish->go-publish - all releases
+name: Au Patient Summary IG Profiles publish->go-publish SNAPSHO - all releases
 
 on:
   push:
@@ -42,13 +42,13 @@ jobs:
         ln -s /webroot webroot   
         mv publish-setup.json ./webroot/
         
-    - name: Checkout AU base Repository
+    - name: Checkout AU patient summary Repository
       uses: actions/checkout@v4
       with:
-        repository: hl7au/au-fhir-base
-        path: hl7au/au-fhir-base
+        repository: hl7au/au-fhir-ps
+        path: hl7au/au-fhir-ps
         ref: ${{ steps.get_tag.outputs.tag }} # explicit, not usually since the default is to checkout the initiating commit
-
+        
     - name: Checkout IG History Template Repository
       uses: actions/checkout@v4
       with:
@@ -66,10 +66,10 @@ jobs:
         echo "Updating Publisher"
         curl -sSL https://raw.githubusercontent.com/HL7/ig-publisher-scripts/main/_updatePublisher.sh | bash -s -- -f -y # uses the latest update script from the ig-publisher-scripts repository
          
-    - name: Basic Publish for Aubase
+    - name: Basic Publish for Au patient summary
       run: |
-          echo "Generating Publish for  Aubase IG..."
-          java -jar input-cache/publisher.jar -ig hl7au/au-fhir-base/ig.ini
+        echo "Generating Publish for  Au patient summary IG..."
+        java -jar input-cache/publisher.jar -ig hl7au/au-fhir-ps/ig.ini
       
     - name: Download package-list.json
       run: |
@@ -82,5 +82,5 @@ jobs:
       run: |
         java -jar input-cache/publisher.jar -generate-package-registry webroot
       
-    - name: Run Aubase Go Publisher build
-      run:  java -jar ./input-cache/publisher.jar -go-publish -source ./hl7au/au-fhir-base -web ./webroot -history ./fhir-history -registry ./ig-registry/fhir-ig-list.json -templates ./templates
+    - name: Run Au patient summary Go Publisher build
+      run:  java -jar ./input-cache/publisher.jar -go-publish -source ./hl7au/au-fhir-ps -web ./webroot -history ./fhir-history -registry ./ig-registry/fhir-ig-list.json -templates ./templates
